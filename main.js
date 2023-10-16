@@ -12,8 +12,8 @@ const saveButton = document.getElementById("saveButton");
 const openModalBtn = document.getElementById('openModalBtn');
 const modalData = document.getElementById('modalData');
 const list = document.getElementById('list');
-
-
+const tableRows = table.querySelectorAll('tbody tr');
+const tooltip = document.getElementById("tooltip");
 
 
 const colourSelectModal = document.getElementById("colourSelectModal");
@@ -252,43 +252,81 @@ closeModalBtn.addEventListener("click", function()
   form.reset();
 });
 
+tableRows.forEach((row, index) => {
+  row.addEventListener('mouseover', () => {
+    // Отримуємо дані з кожної комірки рядка таблиці
+    const cells = row.querySelectorAll('td');
+    const brand = cells[1].textContent;
+    const model = cells[2].textContent;
+    const colour = cells[3].textContent;
+    const salon = cells[4].textContent;
+    const year = cells[5].textContent;
+    const state = cells[6].textContent;
+    const transmition = cells[7].textContent;
 
-editForm.addEventListener("submit", function (e) {
-  e.preventDefault(); // Заборона дії за замовчуванням (відправки форми)
+    // Формуємо текст для tooltip
+    const tooltipText = `Brand: ${brand}\nModel: ${model}\nColour: ${colour}\nSalon: ${salon}\nYear: ${year}\nState: ${state}\nTransmition: ${transmition}`;
 
-  // Отримайте значення полів форми редагування
-  const editedBrand = document.getElementById("editBrand").value;
-  const editedModel = document.getElementById("editModel").value;
-  const editedColour = document.getElementById("colourSelectModal").value;
-  const editedCarSalon = document.getElementById("editSalon").value;
-  const editedYear = document.getElementById("editYear").value;
-  const editedVolume = document.getElementById("volumeSelectModal").value;
-  const editedTransmition = document.getElementById("transmitionSelectModal").value;
+    // Створюємо div елемент для tooltip та встановлюємо текст
+    const tooltipDiv = document.createElement('div');
+    tooltipDiv.className = 'tooltip';
+    tooltipDiv.textContent = tooltipText;
 
-  // Отримайте індекс редагованого автомобіля (можливо ви вже зберігаєте його)
-const editedCarIndex = index;
+    // Вставляємо tooltip перед рядком
+    row.parentNode.insertBefore(tooltipDiv, row);
 
-  // Оновіть дані автомобіля в масиві `savedCars`
-  savedCars[editedCarIndex] = {
-    brand: editedBrand,
-    model: editedModel,
-    colour: editedColour,
-    carSalon: editedCarSalon,
-    year: editedYear,
-    volume: editedVolume,
-    transmition: editedTransmition
-  };
+    // Встановлюємо позицію tooltip
+    const rowRect = row.getBoundingClientRect();
+    tooltipDiv.style.left = rowRect.left + 'px';
+    tooltipDiv.style.top = rowRect.bottom + 'px';
+  });
 
-  // Оновіть збережені дані в localStorage
-  localStorage.setItem("cars", JSON.stringify(savedCars));
-
-  // Оновіть таблицю для відображення оновлених даних
-  updateTable();
-
-  // Закрийте модальне вікно
-  closeModal();
+  row.addEventListener('mouseout', () => {
+    // Видаляємо tooltip при виході з рядка таблиці
+    const tooltipDiv = row.parentNode.querySelector('.tooltip');
+    if (tooltipDiv) {
+      tooltipDiv.remove();
+    }
+  });
 });
 
-listItem.addEventListener('click', openModal);
+
+// editForm.addEventListener("submit", function (e) {
+//   e.preventDefault(); // Заборона дії за замовчуванням (відправки форми)
+
+//   // Отримайте значення полів форми редагування
+//   const editedBrand = document.getElementById("editBrand").value;
+//   const editedModel = document.getElementById("editModel").value;
+//   const editedColour = document.getElementById("colourSelectModal").value;
+//   const editedCarSalon = document.getElementById("editSalon").value;
+//   const editedYear = document.getElementById("editYear").value;
+//   const editedVolume = document.getElementById("volumeSelectModal").value;
+//   const editedTransmition = document.getElementById("transmitionSelectModal").value;
+
+//   // Отримайте індекс редагованого автомобіля (можливо ви вже зберігаєте його)
+// const editedCarIndex = index;
+
+//   // Оновіть дані автомобіля в масиві `savedCars`
+//   savedCars[editedCarIndex] = {
+//     brand: editedBrand,
+//     model: editedModel,
+//     colour: editedColour,
+//     carSalon: editedCarSalon,
+//     year: editedYear,
+//     volume: editedVolume,
+//     transmition: editedTransmition
+//   };
+
+//   // Оновіть збережені дані в localStorage
+//   localStorage.setItem("cars", JSON.stringify(savedCars));
+
+//   // Оновіть таблицю для відображення оновлених даних
+//   updateTable();
+
+//   // Закрийте модальне вікно
+//   closeModal();
+// });
+
+//listItem.addEventListener('click', openModal);
 
 
